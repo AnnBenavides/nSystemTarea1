@@ -8,7 +8,7 @@ typedef enum{
 
 typedef struct oferente{
 	Estado e;
-	double precio;
+	double p;
 	nCondition c;
 } *Oferente;
 
@@ -25,10 +25,10 @@ int compararPrecios(Subasta s,Oferente o){
 	//tomando el precio minimo ofertado en la subasta (s->min)
 	// y que este adentro comparamos los precios
 	// 0 si son iguales
-	if (s->min==o->precio)
+	if (s->min==o->p)
 		return 0;
 	// 1 si precio es mayor al minimo
-	if (s->min>o->precio)
+	if (s->min>o->p)
 		return 1;
 	// -1 se precio es menor al minimo
 	else 
@@ -54,7 +54,7 @@ int swap(Subasta s, Oferente o){
 	nSignalCondition(s->o[minIndex]->c);
 	// en su lugar se pone el nuevo oferente(s->o[minIndex]=o) y se le avisa que esta adentro(o->e=dentro)
 	o->e=dentro;
-	nPrintf("Agregamos la nueva oferta %d /n",o->precio);
+	nPrintf("Agregamos la nueva oferta %d /n",o->p);
 	s->o[minIndex]=o;
 	// se recalcula el menor precio entre los oferentes de la subasta (menorPostor(s))
 	menorPostor(s);
@@ -63,7 +63,7 @@ int swap(Subasta s, Oferente o){
 Oferente initOferta(Subasta s, double precio){
 	Oferente o= (Oferente)nMalloc(sizeof(*o));
 	o->e=afuera;
-	o->precio = precio;
+	o->p = precio;
 	o->c = nMakeCondition(s->m);
 	return o;
 	nPrintf("Registrando oferta:\n");
@@ -72,7 +72,7 @@ Oferente initOferta(Subasta s, double precio){
 double sumarPrecios(Subasta s){
 	double suma=0;
 	for (int i=0;i < s->count;i++){
-		suma= suma+s->o[i].p;
+		suma= suma+s->o[i]->p;
 	}
 	nPrintf("Subasta recaudó %d",suma);
 	return suma;
@@ -120,14 +120,14 @@ int ofrecer(Subasta s, double precio){
 		int comp = compararPrecios(s,o);
 		// si tiene una oferta menor retorna False (2)
 		if (comp<=0){
-			nPrintf("- Oferta rechazada\n")
+			nPrintf("- Oferta rechazada\n");
 			O->e=afuera;
 			nExit(s->m);
 			return FALSE;
 		}
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
 		else{
-			nPrintf("+ Cambiar oferentes en la subasta ")
+			nPrintf("+ Cambiar oferentes en la subasta ");
 			O->e=dentro;
 			swap(s,O);
 			nPrintf("... esperando ...\n");
@@ -135,13 +135,12 @@ int ofrecer(Subasta s, double precio){
 		}
 	}
 	nDestroyCondition(O->c);
-	nPrintf("Oferente despierto: ")
+	nPrintf("Oferente despierto: ");
 	nExit(s->m);
-	if( O->e == dentro){
+	if( O->e == dentro)
 		return TRUE;
-	} else {
+	else
 		return FALSE;
-	}
 	nPrintf("\n");
 }
 
@@ -150,9 +149,8 @@ double adjudicar(Subasta s, int *punidades){
 	nEnter(s->m);
 	*punidades=s->n - s->count;
 	int suma=sumarPrecios(s);
-	for (int i=0;i < s->count;i++){
+	for (int i=0;i < s->count;i++)
 		nSignalCondition(s->o[i]->c);//nNotifyAll penca
-	}
 	nExit(s->m);
 	return suma;
 	nPrintf("Adjudicar finalizado\n");
