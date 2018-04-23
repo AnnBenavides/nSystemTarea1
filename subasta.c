@@ -129,7 +129,7 @@ int ofrecer(Subasta s, double precio){
 	}
 	
 	nPrintf("Oferente despierto: ");
-	nDestroyCondition(O->c);
+	
 	nPrintf("... evaluando el estado actual... ");
 	if (O->e == dentro){
 		nPrintf("DENTRO\n");
@@ -139,6 +139,7 @@ int ofrecer(Subasta s, double precio){
 		return FALSE;
 	}
 	nPrintf("\n");
+	nDestroyCondition(O->c);
 	nExit(s->m);
 }
 
