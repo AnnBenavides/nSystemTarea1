@@ -1,6 +1,6 @@
-#include <nSystem->h>
-#include <stdlib->h>
-#include "subasta->h"
+#include <nSystem.h>
+#include <stdlib.h>
+#include "subasta.h"
 
 typedef enum{
 	dentro, afuera;
