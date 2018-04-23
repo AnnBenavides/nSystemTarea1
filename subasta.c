@@ -25,6 +25,7 @@ int compararPrecios(Subasta s,Oferente o){
 	//tomando el precio minimo ofertado en la subasta (s->min)
 	// y que este adentro comparamos los precios
 	// 0 si son iguales
+	nPrintf("__Comparando %lf con la nueva oferta %lf \n",s->min,o->p);
 	if (s->min==o->p)
 		return 0;
 	// 1 si precio es mayor al minimo
@@ -122,18 +123,19 @@ int ofrecer(Subasta s, double precio){
 		nPrintf("... esperando ...\n");
 		nWaitCondition(O->c);//(1)
 	} else {
+		nPRintf("+Ingresa nueva oferta: %lf ",precio);
 		//comparar oferta con las ya existentes
 		int comp = compararPrecios(s,O);
 		// si tiene una oferta menor retorna False (2)
 		if (comp<=0){
-			nPrintf("- Oferta rechazada\n");
+			nPrintf("... Oferta rechazada\n");
 			O->e=afuera;
 			nExit(s->m);
 			return FALSE;
 		}
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
 		else{
-			nPrintf("+ Cambiar oferentes en la subasta ");
+			nPrintf("... Cambiar oferentes en la subasta ");
 			O->e=dentro;
 			swap(s,O);
 			nPrintf("... esperando ...\n");
