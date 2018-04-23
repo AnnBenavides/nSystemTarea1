@@ -21,21 +21,6 @@ typedef struct subasta {
   int minIndex;
 } *Subasta;
 
-int compararPrecios(Subasta s,Oferente o){
-	//tomando el precio minimo ofertado en la subasta (s->min)
-	// y que este adentro comparamos los precios
-	// 0 si son iguales
-	nPrintf("__Comparando %lf con la nueva oferta %lf \n",s->min,o->p);
-	if (s->min==o->p)
-		return 0;
-	// 1 si precio es mayor al minimo
-	if (s->min>o->p)
-		return 1;
-	// -1 se precio es menor al minimo
-	else 
-		return -1;
-}
-
 void menorPostor(Subasta s){
 	// se calcula el menor precio (s->min) entre los oferentes(s->o[:]) de la subasta
 	// y se guarda el minimo entre estos (s->minIndex)
@@ -123,11 +108,11 @@ int ofrecer(Subasta s, double precio){
 		nPrintf("... esperando ...\n");
 		nWaitCondition(O->c);//(1)
 	} else {
-		nPrintf("+Ingresa nueva oferta: %lf ",precio);
+		nPrintf("+Ingresa nueva oferta: %lf \n",precio);
+		nPrintf("__Comparando %lf con la nueva oferta %lf \n",s->min,o->p);
 		//comparar oferta con las ya existentes
-		int comp = compararPrecios(s,O);
 		// si tiene una oferta menor retorna False (2)
-		if (comp<=0){
+		if (precio <= s->min){
 			nPrintf("... Oferta rechazada\n");
 			O->e=afuera;
 			nExit(s->m);
@@ -135,7 +120,7 @@ int ofrecer(Subasta s, double precio){
 		}
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
 		else{
-			nPrintf("... Cambiar oferentes en la subasta ");
+			nPrintf("... Cambiar oferentes en la subasta: ");
 			O->e=dentro;
 			swap(s,O);
 			nPrintf("... esperando ...\n");
