@@ -46,7 +46,7 @@ void menorPostor(Subasta s){
 	}
 	nPrintf("Nueva menor oferta: %d \n",s->min);
 }
-int swap(Subasta s, Oferente o){
+void swap(Subasta s, Oferente o){
 	//al ofrecer, como el nuevo oferente tiene una mejor apuesta; entra a la subasta:
 	// se saca el oferente desplazado (s->minIndex) y se le avisa que esta afuera (s->o[minIndex].e=afuera)
 	s->o[s->minIndex]->e = afuera;
@@ -94,6 +94,7 @@ Subasta nuevaSubasta(int unidades){
 	s->o = (Oferente)nMalloc(unidades*sizeof(*off));//probar sin *
 	s->minIndex = 0;
 	nPrintf("... subasta abierta!\n");
+	return s;
 }
 
 int ofrecer(Subasta s, double precio){
