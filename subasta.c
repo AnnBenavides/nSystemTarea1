@@ -42,6 +42,7 @@ void swap(Subasta s, Oferente o){
 	o->e=dentro;
 	nPrintf("Agregamos la nueva oferta %lf \n",o->p);
 	s->o[s->minIndex]=o;
+	s->o[s->min]=o->p;
 	// se recalcula el menor precio entre los oferentes de la subasta (menorPostor(s))
 	menorPostor(s);
 }
