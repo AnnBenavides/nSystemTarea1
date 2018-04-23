@@ -134,14 +134,15 @@ int ofrecer(Subasta s, double precio){
 	nPrintf("... evaluando el estado actual... ");
 	if (O->e == dentro){
 		nPrintf("DENTRO\n");
+		nDestroyCondition(O->c);
+		nExit(s->m);	
 		return TRUE;
 	} else {
 		nPrintf("AFUERA\n");
+		nDestroyCondition(O->c);
+		nExit(s->m);	
 		return FALSE;
-	}
-	nPrintf("\n");
-	nDestroyCondition(O->c);
-	nExit(s->m);
+	}	
 }
 
 double adjudicar(Subasta s, int *punidades){
