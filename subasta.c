@@ -36,11 +36,11 @@ void swap(Subasta s, Oferente o){
 	//al ofrecer, como el nuevo oferente tiene una mejor apuesta; entra a la subasta:
 	// se saca el oferente desplazado (s->minIndex) y se le avisa que esta afuera (s->o[minIndex].e=afuera)
 	s->o[s->minIndex]->e = afuera;
-	nPrintf("Eliminamos la oferta menor %lf /n",s->min);
+	nPrintf("Eliminamos la oferta menor %lf \n",s->min);
 	nSignalCondition(s->o[s->minIndex]->c);
 	// en su lugar se pone el nuevo oferente(s->o[minIndex]=o) y se le avisa que esta adentro(o->e=dentro)
 	o->e=dentro;
-	nPrintf("Agregamos la nueva oferta %lf /n",o->p);
+	nPrintf("Agregamos la nueva oferta %lf \n",o->p);
 	s->o[s->minIndex]=o;
 	// se recalcula el menor precio entre los oferentes de la subasta (menorPostor(s))
 	menorPostor(s);
@@ -127,14 +127,20 @@ int ofrecer(Subasta s, double precio){
 			nWaitCondition(O->c);
 		}
 	}
-	//nDestroyCondition(O->c);
+	
 	nPrintf("Oferente despierto: ");
-	nExit(s->m);
-	if( O->e == dentro)
+	nDestroyCondition(O->c);
+	nPrintf("... evaluando el estado actual... ")
+	if( O->e == dentro){
+		nPrintf("DENTRO\n");
 		return TRUE;
-	else
+	}
+	else{
+		nPrintf("AFUERA\n");
 		return FALSE;
+	}
 	nPrintf("\n");
+	nExit(s->m);
 }
 
 double adjudicar(Subasta s, int *punidades){
