@@ -85,7 +85,7 @@ double sumarPrecios(Subasta s){
 // Programe aca las funciones nuevaSubasta, ofrecer y adjudicar
 
 Subasta nuevaSubasta(int unidades){
-	nPrintf("Creando nueva subasta con %lf elementos",unidades);
+	nPrintf("Creando nueva subasta con %d elementos",unidades);
 	Subasta s = nMalloc(sizeof(*s));
 	s->m = nMakeMonitor();
 	s->n = unidades;
@@ -140,7 +140,7 @@ int ofrecer(Subasta s, double precio){
 			nWaitCondition(O->c);
 		}
 	}
-	nDestroyCondition(O->c);
+	//nDestroyCondition(O->c);
 	nPrintf("Oferente despierto: ");
 	nExit(s->m);
 	if( O->e == dentro)
