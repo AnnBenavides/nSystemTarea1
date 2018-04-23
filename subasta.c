@@ -140,7 +140,8 @@ int ofrecer(Subasta s, double precio){
 	} else {
 		nPrintf("AFUERA\n");
 		nDestroyCondition(O->c);
-		nExit(s->m);	
+		nExit(s->m);
+		nFree(O);	
 		return FALSE;
 	}	
 }
