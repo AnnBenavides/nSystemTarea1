@@ -1,4 +1,4 @@
-#include "nSystem.h"
+#include <nSystem.h>
 #include "subasta.h"
 
 // Para poder usar rand
