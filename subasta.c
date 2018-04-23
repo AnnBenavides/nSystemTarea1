@@ -44,17 +44,17 @@ void menorPostor(Subasta s){
 			s-> minIndex = i;
 		}
 	}
-	nPrintf("Nueva menor oferta: %d \n",s->min);
+	nPrintf("Nueva menor oferta: %lf \n",s->min);
 }
 void swap(Subasta s, Oferente o){
 	//al ofrecer, como el nuevo oferente tiene una mejor apuesta; entra a la subasta:
 	// se saca el oferente desplazado (s->minIndex) y se le avisa que esta afuera (s->o[minIndex].e=afuera)
 	s->o[s->minIndex]->e = afuera;
-	nPrintf("Eliminamos la oferta menor %d /n",s->min);
+	nPrintf("Eliminamos la oferta menor %lf /n",s->min);
 	nSignalCondition(s->o[s->minIndex]->c);
 	// en su lugar se pone el nuevo oferente(s->o[minIndex]=o) y se le avisa que esta adentro(o->e=dentro)
 	o->e=dentro;
-	nPrintf("Agregamos la nueva oferta %d /n",o->p);
+	nPrintf("Agregamos la nueva oferta %lf /n",o->p);
 	s->o[s->minIndex]=o;
 	// se recalcula el menor precio entre los oferentes de la subasta (menorPostor(s))
 	menorPostor(s);
@@ -65,7 +65,7 @@ Oferente initOferta(Subasta s, double precio){
 	Oferente o = nMalloc(sizeof(Oferente));
 	nPrintf("e->afuera, ");
 	o->e=afuera;
-	nPrintf("p->%d, ",precio);
+	nPrintf("p->%lf, ",precio);
 	o->p = precio;
 	nPrintf("c->condicion \n");
 	o->c = nMakeCondition(s->m);
@@ -78,14 +78,14 @@ double sumarPrecios(Subasta s){
 	for (int i=0;i < s->count;i++){
 		suma= suma+s->o[i]->p;
 	}
-	nPrintf("Subasta recaudó %d",suma);
+	nPrintf("Subasta recaudó %lf",suma);
 	return suma;
 }
 
 // Programe aca las funciones nuevaSubasta, ofrecer y adjudicar
 
 Subasta nuevaSubasta(int unidades){
-	nPrintf("Creando nueva subasta con %d elementos",unidades);
+	nPrintf("Creando nueva subasta con %lf elementos",unidades);
 	Subasta s = nMalloc(sizeof(*s));
 	s->m = nMakeMonitor();
 	s->n = unidades;
@@ -105,7 +105,7 @@ int ofrecer(Subasta s, double precio){
 	// 2. los otros oferentes tienen mejores ofertas, retorna FALSE
 	nEnter(s->m);
 	if (s->count==0){ //primer oferente
-		nPrintf("+ Ingresa primera oferta: %d",precio);
+		nPrintf("+ Ingresa primera oferta: %lf",precio);
 		O->e=dentro;
 		s->o[s->count]=O;
 		s->min=precio;
@@ -114,7 +114,7 @@ int ofrecer(Subasta s, double precio){
 		nWaitCondition(O->c);//(1)
 	} 
 	else if (s->count < s->n){//primeros n oferentes
-		nPrintf("+ Ingresa nueva oferta: %d",precio);
+		nPrintf("+ Ingresa nueva oferta: %lf",precio);
 		O->e=dentro;
 		s->o[s->count]=O;
 		s->count++;
