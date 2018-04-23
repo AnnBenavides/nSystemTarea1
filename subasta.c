@@ -135,12 +135,10 @@ int ofrecer(Subasta s, double precio){
 	nPrintf("... evaluando el estado actual... ");
 	if (O->e == dentro){
 		nPrintf("DENTRO\n");
-		nDestroyCondition(O->c);
 		nExit(s->m);	
 		return TRUE;
 	} else {
 		nPrintf("AFUERA\n");
-		nDestroyCondition(O->c);
 		nExit(s->m);
 		nFree(O);	
 		return FALSE;
