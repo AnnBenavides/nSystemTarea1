@@ -63,8 +63,11 @@ int swap(Subasta s, Oferente o){
 Oferente initOferta(Subasta s, double precio){
 	nPrintf("Registrando oferta ");
 	Oferente o = nMalloc(sizeof(Oferente));
+	nPrintf("e->afuera, ");
 	o->e=afuera;
+	nPrintf("p->%d, ",precio);
 	o->p = precio;
+	nPrintf("c->condicion \n");
 	o->c = nMakeCondition(s->m);
 	return o;
 	nPrintf("...\n");
