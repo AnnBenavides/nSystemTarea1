@@ -109,7 +109,7 @@ int ofrecer(Subasta s, double precio){
 		nWaitCondition(O->c);//(1)
 	} else {
 		nPrintf("+Ingresa nueva oferta: %lf \n",precio);
-		nPrintf("__Comparando %lf con la nueva oferta %lf \n",s->min,o->p);
+		nPrintf("__Comparando %lf con la nueva oferta %lf \n",s->min,precio);
 		//comparar oferta con las ya existentes
 		// si tiene una oferta menor retorna False (2)
 		if (precio <= s->min){

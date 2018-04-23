@@ -1,5 +1,3 @@
-typedef enum Estado;
-typedef struct oferente *Oferente;
 typedef struct subasta *Subasta;
 
 Subasta nuevaSubasta(int unidades);
