@@ -84,7 +84,7 @@ int ofrecer(Subasta s, double precio){
 		s->o[0]->p = precio;
 		nPrintf("\t 2..");
 		s->min = precio;
-		nPrintf("\t min..");
+		nPrintf("\t min..\n");
 		s->count++;
 		nPrintf("... esperando ...\n");
 		O=s->o[0];
@@ -142,14 +142,14 @@ double adjudicar(Subasta s, int *punidades){
 	nEnter(s->m);
 	s->ready=TRUE;
 	int resto=(int)s->n - (int)s->count;
-	nPrintf("\t\tQuedaron %lf unidades libres\n",resto);
+	nPrintf("\t\tQuedaron %d unidades libres\n",resto);
 	*punidades = resto;
 	double suma=0;
 	for (int i=0;i < s->count;i++){
 		suma= suma + s->o[i]->p;
 		nSignalCondition(s->o[i]->c);//nNotifyAll penca
 	}
-	nExit(s->m);
 	nPrintf("\t\tSuma = %lf\n",suma);
+	nExit(s->m);
 	return suma;
 }
