@@ -60,15 +60,6 @@ Oferente initOferta(Subasta s, double precio){
 	nPrintf("...\n");
 }
 
-double sumarPrecios(Subasta s){
-	double suma=0;
-	for (int i=0;i < s->count;i++){
-		suma= suma+s->o[i]->p;
-	}
-	nPrintf("Subasta recaudó %lf",suma);
-	return suma;
-}
-
 // Programe aca las funciones nuevaSubasta, ofrecer y adjudicar
 
 Subasta nuevaSubasta(int unidades){
@@ -120,7 +111,6 @@ int ofrecer(Subasta s, double precio){
 			nPrintf("... Oferta rechazada\n");
 			O->e=afuera;
 			nExit(s->m);
-			nFree(O);
 			return FALSE;
 		}
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
@@ -137,11 +127,9 @@ int ofrecer(Subasta s, double precio){
 	nPrintf("Oferente despierto: ");
 	if (O->e == dentro){
 		nPrintf("DENTRO\n");
-		nFree(O);
 		return TRUE;
 	} else {
 		nPrintf("AFUERA\n");
-		nFree(O);	
 		return FALSE;
 	}	
 }
@@ -150,8 +138,9 @@ double adjudicar(Subasta s, int *punidades){
 	nPrintf("Adjudicar!\n");
 	nEnter(s->m);
 	*punidades=s->n - s->count;
-	int suma=sumarPrecios(s);
+	int suma=0;
 	for (int i=0;i < s->count;i++)
+		suma= suma + s->o[i]->p;
 		nSignalCondition(s->o[i]->c);//nNotifyAll penca
 	nExit(s->m);
 	return suma;
