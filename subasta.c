@@ -77,7 +77,7 @@ int ofrecer(Subasta s, double precio){
 	// 1. la subasta se cierre (se llame a adjudicar) retornando TRUE
 	// 2. los otros oferentes tienen mejores ofertas, retorna FALSE
 	nEnter(s->m);
-	if (s->count==0){ //primer oferente
+	if (s->count == 0){ //primer oferente
 		nPrintf("\t+ Ingresa primera oferta: %lf",precio);
 		s->o[0]->e = dentro;
 		nPrintf("\t 1..");
@@ -87,14 +87,14 @@ int ofrecer(Subasta s, double precio){
 		nPrintf("\t min..\n");
 		s->count++;
 		nPrintf("\t... esperando ...\n");
-		O=s->o[0];
+		O = s->o[0];
 		nWaitCondition(O->c);//(1)
 	} 
 	else if (s->count < s->n){//primeros n oferentes
 		nPrintf("\t+ Ingresa nueva oferta: %lf",precio);
 		s->o[s->count]->e = dentro;
 		s->o[s->count]->p = precio;
-		O=s->o[s->count];
+		O = s->o[s->count];
 		s->count++;
 		menorPostor(s);
 		nPrintf("\t... esperando ...\n");
@@ -115,15 +115,14 @@ int ofrecer(Subasta s, double precio){
 			//TODO swap
 			s->o[s->minIndex]->e=afuera;
 			nSignalCondition(s->o[s->minIndex]->c);
-			nSleep(1000);
 			nPrintf("Hechar al menor postor de la subasta\n");
 			//poner los datos del nuevo oferente
 
-			s->o[s->minIndex]->e=dentro;
-			s->o[s->minIndex]->p=precio;
-			int index=s->minIndex;
-			O=s->o[s->minIndex];
-			s->min=precio;
+			s->o[s->minIndex]->e = dentro;
+			s->o[s->minIndex]->p = precio;
+			int index = s->minIndex;
+			O = s->o[s->minIndex];
+			s->min = precio;
 			menorPostor(s);
 			nPrintf("\t... esperando ...\n");
 			nWaitCondition(s->o[index]->c);
@@ -154,13 +153,13 @@ int ofrecer(Subasta s, double precio){
 double adjudicar(Subasta s, int *punidades){
 	nPrintf("\tAdjudicar!\n");
 	nEnter(s->m);
-	s->ready=TRUE;
-	int resto=(int)s->n - (int)s->count;
+	s->ready = TRUE;
+	int resto = (int)s->n - (int)s->count;
 	nPrintf("\t\tQuedaron %d unidades libres\n",resto);
 	*punidades = resto;
 	double suma=0;
 	for (int i=0;i < s->count;i++){
-		suma= suma + s->o[i]->p;
+		suma = suma + s->o[i]->p;
 		nSignalCondition(s->o[i]->c);//nNotifyAll penca
 	}
 	nPrintf("\t\tSuma = %lf\n",suma);
