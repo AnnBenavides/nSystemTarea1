@@ -56,7 +56,7 @@ Subasta nuevaSubasta(int unidades){
 	s->count = 0;
 	s->o = (Oferente*)nMalloc(unidades*sizeof(Oferente));//probar sin *
 	for(int i=0;i<unidades;i++){
-		s->o[i] = nMalloc(sizeof(Oferente));
+		//s->o[i] = nMalloc(sizeof(Oferente));
 		nPrintf("\n\t\te->afuera, ");
 		s->o[i]->e=afuera;
 		nPrintf("p->%lf, ",0);
