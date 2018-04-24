@@ -32,6 +32,20 @@ void menorPostor(Subasta s){
 	}
 	nPrintf("Nueva menor oferta: %lf \n",s->min);
 }
+void swap(Subasta s, Oferente o){
+	//al ofrecer, como el nuevo oferente tiene una mejor apuesta; entra a la subasta:
+	// se saca el oferente desplazado (s->minIndex) y se le avisa que esta afuera (s->o[minIndex].e=afuera)
+	s->o[s->minIndex]->e = afuera;
+	nPrintf("Eliminamos la oferta menor %lf \n",s->min);
+	nSignalCondition(s->o[s->minIndex]->c);
+	// en su lugar se pone el nuevo oferente(s->o[minIndex]=o) y se le avisa que esta adentro(o->e=dentro)
+	o->e=dentro;
+	nPrintf("Agregamos la nueva oferta %lf \n",o->p);
+	s->o[s->minIndex]=o;
+	s->min =o->p;
+	// se recalcula el menor precio entre los oferentes de la subasta (menorPostor(s))
+	menorPostor(s);
+}
 
 Oferente initOferta(Subasta s, double precio){
 	nPrintf("Registrando oferta ");
@@ -63,14 +77,13 @@ Subasta nuevaSubasta(int unidades){
 
 int ofrecer(Subasta s, double precio){
 	// oferta (precio) de comprar un elemento de la subasta
-	Oferente O;
+	Oferente O = initOferta(s,precio);;
 	// esperando hasta que:
 	// 1. la subasta se cierre (se llame a adjudicar) retornando TRUE
 	// 2. los otros oferentes tienen mejores ofertas, retorna FALSE
 	nEnter(s->m);
 	if (s->count==0){ //primer oferente
 		nPrintf("+ Ingresa primera oferta: %lf",precio);
-		O= initOferta(s,precio);
 		O->e=dentro;
 		s->o[s->count]=O;
 		s->min=precio;
@@ -81,7 +94,6 @@ int ofrecer(Subasta s, double precio){
 	} 
 	else if (s->count < s->n){//primeros n oferentes
 		nPrintf("+ Ingresa nueva oferta: %lf",precio);
-		O= initOferta(s,precio);
 		O->e=dentro;
 		s->o[s->count]=O;
 		s->count++;
@@ -97,24 +109,14 @@ int ofrecer(Subasta s, double precio){
 		if (precio <= s->min){
 			nPrintf("... Oferta rechazada\n");
 			nExit(s->m);
+			nFree(O);
 			return FALSE;
 		}
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
 		else{
 			nPrintf("... Cambiar oferentes en la subasta: ");
-			//al ofrecer, como el nuevo oferente tiene una mejor apuesta; entra a la subasta:
-			// se saca el oferente desplazado (s->minIndex) y se le avisa que esta afuera (s->o[minIndex].e=afuera)
-			s->o[s->minIndex]->e = afuera;
-			nPrintf("eliminamos la oferta menor %lf -",s->min);
-			nSignalCondition(s->o[s->minIndex]->c);
-			// en su lugar se pone el nuevo oferente(s->o[minIndex]=o) y se le avisa que esta adentro(o->e=dentro)
-			s->o[s->minIndex]->p=precio;
-			s->min =precio;
-			
-			nPrintf("Agregamos la nueva oferta %lf \n",precio);
-			s->o[s->minIndex]->e=dentro;
-			// se recalcula el menor precio entre los oferentes de la subasta (menorPostor(s))
-			menorPostor(s);
+			O->e=dentro;
+			swap(s,O);
 			nPrintf("... esperando ...\n");
 			nWaitCondition(O->c);
 			nExit(s->m);
@@ -127,6 +129,7 @@ int ofrecer(Subasta s, double precio){
 		return TRUE;
 	} else {
 		nPrintf("AFUERA\n");
+		nFree(O);
 		return FALSE;
 	}	
 }
