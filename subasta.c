@@ -7,7 +7,7 @@ typedef enum{
 } Estado;
 
 typedef struct oferente{
-	int e;//Estado e;
+	int e;// true si está adentro de subasta
 	double p;
 	nCondition c;
 } *Oferente;
