@@ -118,6 +118,7 @@ int ofrecer(Subasta s, double precio){
 			nSleep(1000);
 			nPrintf("Hechar al menor postor de la subasta\n");
 			//poner los datos del nuevo oferente
+			nEnter(s->m);
 			s->o[s->minIndex]->e=dentro;
 			s->o[s->minIndex]->p=precio;
 			O=s->o[s->minIndex];
