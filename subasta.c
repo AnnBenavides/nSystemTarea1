@@ -68,6 +68,15 @@ Subasta nuevaSubasta(int unidades){
 	s->n = unidades;
 	s->count = 0;
 	s->o = (Oferente*)nMalloc(unidades*sizeof(Oferente));//probar sin *
+	for(int i=0;i<unidades;i++){
+		s->o[i] = nMalloc(sizeof(Oferente));
+		nPrintf("e->afuera, ");
+		s->o[i]->e=afuera;
+		nPrintf("p->%lf, ",0);
+		s->o[i]->p = 0;
+		nPrintf("c->condicion \n");
+		s->o[i]->c = nMakeCondition(s->m);
+	}
 	s->minIndex = 0;
 	nPrintf("... subasta abierta!\n");
 	return s;
@@ -86,8 +95,6 @@ int ofrecer(Subasta s, double precio){
 		nPrintf("\t 1..");
 		s->o[0]->p = precio;
 		nPrintf("\t 2..");
-		s->o[0]->c = nMakeCondition(s->m);
-		nPrintf("\t 3..");
 		s->min = precio;
 		nPrintf("\t min..");
 		s->count++;
@@ -100,7 +107,6 @@ int ofrecer(Subasta s, double precio){
 		nPrintf("\t+ Ingresa nueva oferta: %lf",precio);
 		s->o[s->count]->e = dentro;
 		s->o[s->count]->p = precio;
-		s->o[s->count]->c = nMakeCondition(s->m);
 		O=s->o[s->count];
 		s->count++;
 		menorPostor(s);
@@ -146,7 +152,7 @@ int ofrecer(Subasta s, double precio){
 double adjudicar(Subasta s, int *punidades){
 	nPrintf("\tAdjudicar!\n");
 	nEnter(s->m);
-	int resto=s->n - s->count;
+	int resto=(int)s->n - (int)s->count;
 	nPrintf("\t\tQuedaron %lf unidades libres\n",resto);
 	punidades=resto;
 	double suma=0;
