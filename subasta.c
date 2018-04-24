@@ -18,7 +18,7 @@ typedef struct subasta {
   int count;//cupos utilizados
   Oferente *o;//ofretentes
   double min;
-  int minIndex;
+  int minIndex,ready;
 } *Subasta;
 
 void menorPostor(Subasta s){
@@ -78,6 +78,7 @@ Subasta nuevaSubasta(int unidades){
 		s->o[i]->c = nMakeCondition(s->m);
 	}
 	s->minIndex = 0;
+	s->ready=FALSE;
 	nPrintf("... subasta abierta!\n");
 	return s;
 }
@@ -137,7 +138,7 @@ int ofrecer(Subasta s, double precio){
 		}
 	}
 	nPrintf("\tOferente despierto: ");
-	if (O->e == dentro){
+	if (O->e == dentro && s->ready){
 		nPrintf("DENTRO\n");
 		nExit(s->m);
 		return TRUE;
@@ -151,6 +152,7 @@ int ofrecer(Subasta s, double precio){
 double adjudicar(Subasta s, int *punidades){
 	nPrintf("\tAdjudicar!\n");
 	nEnter(s->m);
+	s->ready=TRUE;
 	int resto=(int)s->n - (int)s->count;
 	nPrintf("\t\tQuedaron %lf unidades libres\n",resto);
 	punidades = resto;
