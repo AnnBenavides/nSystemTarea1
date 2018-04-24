@@ -2,48 +2,29 @@
 #include <stdlib.h>
 #include "subasta.h"
 
-typedef enum{
-	dentro, afuera
-} Estado;
-
-typedef struct oferente{
-	int e;// true si está adentro de subasta
-	double p;
-	nCondition c;
-} *Oferente;
-
 typedef struct subasta {
   int n; //cupo de subastadores
   nMonitor m;
   int count;//cupos utilizados
-  Oferente *o;//ofretentes
-  double min;
+  //Oferentes
+  int *e;//estados, true si está dentro de subasta
+  double *p;//precios
+  nCondition *c;//condiciones
+
+  //Oferente *o;//ofretentes
+  //double min;
   int minIndex,ready;
 } *Subasta;
 
 void menorPostor(Subasta s){
-	// se calcula el menor precio (s->min) entre los oferentes(s->o[:]) de la subasta
-	// y se guarda el minimo entre estos (s->minIndex)
+	// se calcula el menor precio entre los oferentes de la subasta
+	// y se guarda el minimo entre estos
 	for (int i=0;i < s->count;i++){
-		if(s->o[i]->p < s->min){
-			s-> min = s->o[i]->p;
+		if(s->o[i]->p < s->p[s->minIndex]){
 			s-> minIndex = i;
 		}
 	}
-	nPrintf("\tNueva menor oferta: %lf \n",s->min);
-}
-
-Oferente initOferta(Subasta s, double precio){
-	nPrintf("\tRegistrando oferta ");
-	Oferente o = nMalloc(sizeof(Oferente));
-	nPrintf("e->afuera, ");
-	o->e=FALSE;//afuera;
-	nPrintf("p->%lf, ",precio);
-	o->p = precio;
-	nPrintf("c->condicion \n");
-	o->c = nMakeCondition(s->m);
-	return o;
-	nPrintf("\t...\n");
+	nPrintf("\tNueva menor oferta: %lf \n",s->p[s->minIndex]);
 }
 
 // Programe aca las funciones nuevaSubasta, ofrecer y adjudicar
@@ -54,15 +35,17 @@ Subasta nuevaSubasta(int unidades){
 	s->m = nMakeMonitor();
 	s->n = unidades;
 	s->count = 0;
-	s->o = (Oferente*)nMalloc(unidades*sizeof(Oferente));//probar sin *
+	s->e = (int)nMalloc(unidades*sizeof(int));
+	s->p = (double)nMalloc(unidades*sizeof(double));
+	s->c = (nCondition)nMalloc(unidades*sizeof(nCondition));
 	for(int i=0;i<unidades;i++){
-		s->o[i] = nMalloc(sizeof(Oferente));
+		//s->o[i] = nMalloc(sizeof(Oferente));
 		nPrintf("\n\t\te->afuera, ");
-		s->o[i]->e=FALSE;//afuera;
+		s->e[i]=FALSE;//afuera;
 		nPrintf("p->%lf, ",0);
-		s->o[i]->p = 0.0;
+		s->p[i] = 0.0;
 		nPrintf("c->condicion");
-		s->o[i]->c = nMakeCondition(s->m);
+		s->c[i] = nMakeCondition(s->m);
 	}
 	s->minIndex = 0;
 	s->ready=FALSE;
@@ -71,40 +54,44 @@ Subasta nuevaSubasta(int unidades){
 }
 
 int ofrecer(Subasta s, double precio){
-	// oferta (precio) de comprar un elemento de la subasta
-	Oferente O;// = initOferta(s,precio);
-	// esperando hasta que:
+	// oferta de comprar un elemento de la subasta
+	//Oferente O;// = initOferta(s,precio);
+	// esperando hasta que
 	// 1. la subasta se cierre (se llame a adjudicar) retornando TRUE
 	// 2. los otros oferentes tienen mejores ofertas, retorna FALSE
 	nEnter(s->m);
+	int index;
 	if (s->count == 0){ //primer oferente
 		nPrintf("\t+ Ingresa primera oferta: %lf",precio);
-		s->o[0]->e = TRUE;//dentro;
-		nPrintf("\t 1..");
-		s->o[0]->p = precio;
-		nPrintf("\t 2..");
-		s->min = precio;
-		nPrintf("\t min..\n");
+		index=0;
 		s->count++;
+		s->e[index] = TRUE;//dentro;
+		nPrintf("\t 1..");
+		s->p[index] = precio;
+		nPrintf("\t 2..");
+		menorPostor(s);
+		nPrintf("\t min..\n");
 		nPrintf("\t... esperando ...\n");
-		O = s->o[0];
-		nWaitCondition(O->c);//(1)
+		nWaitCondition(s->c[index]);//(1)
 	} 
 	else if (s->count < s->n){//primeros n oferentes
 		nPrintf("\t+ Ingresa nueva oferta: %lf",precio);
-		s->o[s->count]->e = TRUE;//dentro;
-		s->o[s->count]->p = precio;
-		O = s->o[s->count];
+		index = s->count;
 		s->count++;
+		s->e[index]= TRUE;//dentro;
+		nPrintf("\t 1..");
+		s->p[index] = precio;
+		nPrintf("\t 2..");
 		menorPostor(s);
+		nPrintf("\t min..\n");
 		nPrintf("\t... esperando ...\n");
-		nWaitCondition(O->c);//(1)
+		nWaitCondition(s->c[index]);//(1)
 	} else {
 		nPrintf("\t+Ingresa nueva oferta: %lf \n",precio);
-		nPrintf("\t\tComparando %lf con la nueva oferta %lf \n",s->min,precio);
+		nPrintf("\t\tComparando %lf con la nueva oferta %lf \n",s->p[s->minIndex],precio);
 		//comparar oferta con las ya existentes
 		// si tiene una oferta menor retorna False (2)
-		if (precio <= s->min){
+		if (precio <= s->p[s->minIndex]){
 			nPrintf("\t\tOferta rechazada\n");
 			nExit(s->m);
 			return FALSE;
@@ -113,21 +100,21 @@ int ofrecer(Subasta s, double precio){
 		else{
 			nPrintf("\t\tCambiar oferentes en la subasta: ");
 			//TODO swap
-			s->o[s->minIndex]->e = FALSE;//afuera;
-			nSignalCondition(s->o[s->minIndex]->c);
+			index = s->minIndex;
 			nPrintf("Hechar al menor postor de la subasta\n");
-			//poner los datos del nuevo oferente
-
-			s->o[s->minIndex]->e = TRUE;//dentro;
-			s->o[s->minIndex]->p = precio;
-			int index = s->minIndex;
-			O = s->o[s->minIndex];
-			s->min = precio;
+			s->e[index] = FALSE;//afuera;
+			nSignalCondition(s->c[index]);
+			nPrintf("\tAgregando la nueva oferta: ");
+			s->e[index] = TRUE;//dentro;
+			nPrintf(".. 1 ");
+			s->p[index] = precio;
+			nPrintf(".. 2 ");
+			nPrintf(".. min\n");
 			menorPostor(s);
 			nPrintf("\t... esperando ...\n");
 			nWaitCondition(s->o[index]->c);
 			nPrintf("\tOferente despierto: ");
-			if (s->o[index]->e && s->ready){
+			if (s->e[index] && s->ready){
 				nPrintf("DENTRO\n");
 				nExit(s->m);
 				return TRUE;
@@ -159,8 +146,8 @@ double adjudicar(Subasta s, int *punidades){
 	*punidades = resto;
 	double suma=0;
 	for (int i=0;i < s->count;i++){
-		suma = suma + s->o[i]->p;
-		nSignalCondition(s->o[i]->c);//nNotifyAll penca
+		suma = suma + s->p[i];
+		nSignalCondition(s->c[i]);//nNotifyAll penca
 	}
 	nPrintf("\t\tSuma = %lf\n",suma);
 	nExit(s->m);
