@@ -20,7 +20,7 @@ void menorPostor(Subasta s){
 	// se calcula el menor precio entre los oferentes de la subasta
 	// y se guarda el minimo entre estos
 	for (int i=0;i < s->count;i++){
-		if(s->o[i]->p < s->p[s->minIndex]){
+		if(s->p[i] < s->p[s->minIndex]){
 			s-> minIndex = i;
 		}
 	}
@@ -35,9 +35,9 @@ Subasta nuevaSubasta(int unidades){
 	s->m = nMakeMonitor();
 	s->n = unidades;
 	s->count = 0;
-	s->e = (int)nMalloc(unidades*sizeof(int));
-	s->p = (double)nMalloc(unidades*sizeof(double));
-	s->c = (nCondition)nMalloc(unidades*sizeof(nCondition));
+	s->e = (int*)nMalloc(unidades*sizeof(int));
+	s->p = (double*)nMalloc(unidades*sizeof(double));
+	s->c = (nCondition*)nMalloc(unidades*sizeof(nCondition));
 	for(int i=0;i<unidades;i++){
 		//s->o[i] = nMalloc(sizeof(Oferente));
 		nPrintf("\n\t\te->afuera, ");
@@ -112,7 +112,7 @@ int ofrecer(Subasta s, double precio){
 			nPrintf(".. min\n");
 			menorPostor(s);
 			nPrintf("\t... esperando ...\n");
-			nWaitCondition(s->o[index]->c);
+			nWaitCondition(s->c[index]);
 			nPrintf("\tOferente despierto: ");
 			if (s->e[index] && s->ready){
 				nPrintf("DENTRO\n");
@@ -126,7 +126,7 @@ int ofrecer(Subasta s, double precio){
 		}
 	}
 	nPrintf("\tOferente despierto: ");
-	if (O->e && s->ready){
+	if (s->e[index] && s->ready){
 		nPrintf("DENTRO\n");
 		nExit(s->m);
 		return TRUE;
