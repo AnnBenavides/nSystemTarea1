@@ -121,11 +121,11 @@ int ofrecer(Subasta s, double precio){
 
 			s->o[s->minIndex]->e=dentro;
 			s->o[s->minIndex]->p=precio;
-			O=s->o[s->minIndex];
+			int index=s->minIndex;
 			s->min=precio;
 			menorPostor(s);
 			nPrintf("\t... esperando ...\n");
-			nWaitCondition(O->c);
+			nWaitCondition(s->o[index]->c);
 		}
 	}
 	nPrintf("\tOferente despierto: ");
