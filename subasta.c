@@ -32,19 +32,6 @@ void menorPostor(Subasta s){
 	}
 	nPrintf("\tNueva menor oferta: %lf \n",s->min);
 }
-void swap(Subasta s, Oferente o){
-	//al ofrecer, como el nuevo oferente tiene una mejor apuesta; entra a la subasta:
-	// se saca el oferente desplazado (s->minIndex) y se le avisa que esta afuera (s->o[minIndex].e=afuera)
-	s->o[s->minIndex]->e = afuera;
-	nPrintf("\tEliminamos la oferta menor %lf \n",s->min);
-	nSignalCondition(s->o[s->minIndex]->c);
-	// en su lugar se pone el nuevo oferente(s->o[minIndex]=o) y se le avisa que esta adentro(o->e=dentro)
-	nPrintf("\tAgregamos la nueva oferta %lf \n",o->p);
-	s->o[s->minIndex]=o;
-	s->min =o->p;
-	// se recalcula el menor precio entre los oferentes de la subasta (menorPostor(s))
-	menorPostor(s);
-}
 
 Oferente initOferta(Subasta s, double precio){
 	nPrintf("\tRegistrando oferta ");
@@ -133,6 +120,7 @@ int ofrecer(Subasta s, double precio){
 			s->o[s->minIndex]->e=dentro;
 			s->o[s->minIndex]->p=precio;
 			s->min=precio;
+			menorPostor(s);
 			nPrintf("... esperando ...\n");
 			nWaitCondition(s->o[s->minIndex]->c);
 		}
@@ -155,7 +143,7 @@ double adjudicar(Subasta s, int *punidades){
 	s->ready=TRUE;
 	int resto=(int)s->n - (int)s->count;
 	nPrintf("\t\tQuedaron %lf unidades libres\n",resto);
-	punidades = resto;
+	*punidades = resto;
 	double suma=0;
 	for (int i=0;i < s->count;i++){
 		suma= suma + s->o[i]->p;
