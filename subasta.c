@@ -100,6 +100,7 @@ int ofrecer(Subasta s, double precio){
 		s->count++;
 		nPrintf("... esperando ...\n");
 		nWaitCondition(O->c);//(1)
+		nExit(s->m);
 	} 
 	else if (s->count < s->n){//primeros n oferentes
 		nPrintf("+ Ingresa nueva oferta: %lf",precio);
@@ -109,6 +110,7 @@ int ofrecer(Subasta s, double precio){
 		menorPostor(s);
 		nPrintf("... esperando ...\n");
 		nWaitCondition(O->c);//(1)
+		nExit(s->m);
 	} else {
 		nPrintf("+Ingresa nueva oferta: %lf \n",precio);
 		nPrintf("__Comparando %lf con la nueva oferta %lf \n",s->min,precio);
@@ -118,6 +120,7 @@ int ofrecer(Subasta s, double precio){
 			nPrintf("... Oferta rechazada\n");
 			O->e=afuera;
 			nExit(s->m);
+			nFree(O);
 			return FALSE;
 		}
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
@@ -127,19 +130,17 @@ int ofrecer(Subasta s, double precio){
 			swap(s,O);
 			nPrintf("... esperando ...\n");
 			nWaitCondition(O->c);
+			nExit(s->m);
 		}
 	}
 	
 	nPrintf("Oferente despierto: ");
-	nPrintf("... evaluando el estado actual... ");
 	if (O->e == dentro){
 		nPrintf("DENTRO\n");
-		nExit(s->m);
 		nFree(O);
 		return TRUE;
 	} else {
 		nPrintf("AFUERA\n");
-		nExit(s->m);
 		nFree(O);	
 		return FALSE;
 	}	
