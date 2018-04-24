@@ -7,7 +7,7 @@ typedef enum{
 } Estado;
 
 typedef struct oferente{
-	Estado e;
+	int e;//Estado e;
 	double p;
 	nCondition c;
 } *Oferente;
@@ -37,7 +37,7 @@ Oferente initOferta(Subasta s, double precio){
 	nPrintf("\tRegistrando oferta ");
 	Oferente o = nMalloc(sizeof(Oferente));
 	nPrintf("e->afuera, ");
-	o->e=afuera;
+	o->e=FALSE;//afuera;
 	nPrintf("p->%lf, ",precio);
 	o->p = precio;
 	nPrintf("c->condicion \n");
@@ -58,7 +58,7 @@ Subasta nuevaSubasta(int unidades){
 	for(int i=0;i<unidades;i++){
 		s->o[i] = nMalloc(sizeof(Oferente));
 		nPrintf("\n\t\te->afuera, ");
-		s->o[i]->e=afuera;
+		s->o[i]->e=FALSE;//afuera;
 		nPrintf("p->%lf, ",0);
 		s->o[i]->p = 0.0;
 		nPrintf("c->condicion");
@@ -79,7 +79,7 @@ int ofrecer(Subasta s, double precio){
 	nEnter(s->m);
 	if (s->count == 0){ //primer oferente
 		nPrintf("\t+ Ingresa primera oferta: %lf",precio);
-		s->o[0]->e = dentro;
+		s->o[0]->e = TRUE;//dentro;
 		nPrintf("\t 1..");
 		s->o[0]->p = precio;
 		nPrintf("\t 2..");
@@ -92,7 +92,7 @@ int ofrecer(Subasta s, double precio){
 	} 
 	else if (s->count < s->n){//primeros n oferentes
 		nPrintf("\t+ Ingresa nueva oferta: %lf",precio);
-		s->o[s->count]->e = dentro;
+		s->o[s->count]->e = TRUE;//dentro;
 		s->o[s->count]->p = precio;
 		O = s->o[s->count];
 		s->count++;
@@ -113,12 +113,12 @@ int ofrecer(Subasta s, double precio){
 		else{
 			nPrintf("\t\tCambiar oferentes en la subasta: ");
 			//TODO swap
-			s->o[s->minIndex]->e=afuera;
+			s->o[s->minIndex]->e = FALSE;//afuera;
 			nSignalCondition(s->o[s->minIndex]->c);
 			nPrintf("Hechar al menor postor de la subasta\n");
 			//poner los datos del nuevo oferente
 
-			s->o[s->minIndex]->e = dentro;
+			s->o[s->minIndex]->e = TRUE;//dentro;
 			s->o[s->minIndex]->p = precio;
 			int index = s->minIndex;
 			O = s->o[s->minIndex];
@@ -127,7 +127,7 @@ int ofrecer(Subasta s, double precio){
 			nPrintf("\t... esperando ...\n");
 			nWaitCondition(s->o[index]->c);
 			nPrintf("\tOferente despierto: ");
-			if (s->o[index]->e == dentro && s->ready){
+			if (s->o[index]->e && s->ready){
 				nPrintf("DENTRO\n");
 				nExit(s->m);
 				return TRUE;
@@ -139,7 +139,7 @@ int ofrecer(Subasta s, double precio){
 		}
 	}
 	nPrintf("\tOferente despierto: ");
-	if (O->e == dentro && s->ready){
+	if (O->e && s->ready){
 		nPrintf("DENTRO\n");
 		nExit(s->m);
 		return TRUE;
