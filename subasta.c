@@ -110,6 +110,7 @@ int ofrecer(Subasta s, double precio){
 			nPrintf("... Oferta rechazada\n");
 			O->e=afuera;
 			nExit(s->m);
+			nFree(O);
 			return FALSE;
 		}
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
@@ -126,6 +127,7 @@ int ofrecer(Subasta s, double precio){
 	nPrintf("Oferente despierto: ");
 	if (O->e == dentro){
 		nPrintf("DENTRO\n");
+
 		return TRUE;
 	} else {
 		nPrintf("AFUERA\n");
