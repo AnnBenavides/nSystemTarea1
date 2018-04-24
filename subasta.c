@@ -127,13 +127,13 @@ int ofrecer(Subasta s, double precio){
 			//TODO swap
 			s->o[s->minIndex]->e=afuera;
 			nSignalCondition(s->o[s->minIndex]->c);
-			nPrintf("\t\t Hechar al menor postor de la subasta\n");
+			nPrintf("Hechar al menor postor de la subasta\n");
 			//poner los datos del nuevo oferente
 			s->o[s->minIndex]->e=dentro;
 			s->o[s->minIndex]->p=precio;
 			s->min=precio;
 			nPrintf("... esperando ...\n");
-			nWaitCondition(O->c);
+			nWaitCondition(s->o[s->minIndex]->c);
 		}
 	}
 	nPrintf("\tOferente despierto: ");
