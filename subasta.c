@@ -70,11 +70,11 @@ Subasta nuevaSubasta(int unidades){
 	s->o = (Oferente*)nMalloc(unidades*sizeof(Oferente));//probar sin *
 	for(int i=0;i<unidades;i++){
 		s->o[i] = nMalloc(sizeof(Oferente));
-		nPrintf("e->afuera, ");
+		nPrintf("\n\t\te->afuera, ");
 		s->o[i]->e=afuera;
 		nPrintf("p->%lf, ",0);
 		s->o[i]->p = 0;
-		nPrintf("c->condicion \n");
+		nPrintf("c->condicion");
 		s->o[i]->c = nMakeCondition(s->m);
 	}
 	s->minIndex = 0;
@@ -84,7 +84,7 @@ Subasta nuevaSubasta(int unidades){
 
 int ofrecer(Subasta s, double precio){
 	// oferta (precio) de comprar un elemento de la subasta
-	Oferente O;// = initOferta(s,precio);
+	Oferente *O;// = initOferta(s,precio);
 	// esperando hasta que:
 	// 1. la subasta se cierre (se llame a adjudicar) retornando TRUE
 	// 2. los otros oferentes tienen mejores ofertas, retorna FALSE
