@@ -109,7 +109,7 @@ int ofrecer(Subasta s, double precio){
 			nSignalCondition(s->o[s->minIndex]->c);
 			// en su lugar se pone el nuevo oferente(s->o[minIndex]=o) y se le avisa que esta adentro(o->e=dentro)
 			s->o[s->minIndex]->e=dentro;
-			nPrintf("Agregamos la nueva oferta %lf \n",o->p);
+			nPrintf("Agregamos la nueva oferta %lf \n",precio);
 			s->o[s->minIndex]->p=precio;
 			s->min =precio;
 			// se recalcula el menor precio entre los oferentes de la subasta (menorPostor(s))
