@@ -72,7 +72,6 @@ Subasta nuevaSubasta(int unidades){
 	s->o = nMalloc(unidades*sizeof(*off));//probar sin *
 	s->minIndex = 0;
 	nPrintf("... subasta abierta!\n");
-	nFree(off);
 	return s;
 }
 
