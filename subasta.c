@@ -139,9 +139,10 @@ double adjudicar(Subasta s, int *punidades){
 	nEnter(s->m);
 	*punidades=s->n - s->count;
 	int suma=0;
-	for (int i=0;i < s->count;i++)
+	for (int i=0;i < s->count;i++){
 		suma= suma + s->o[i]->p;
 		nSignalCondition(s->o[i]->c);//nNotifyAll penca
+	}
 	nExit(s->m);
 	return suma;
 	nPrintf("Adjudicar finalizado\n");
