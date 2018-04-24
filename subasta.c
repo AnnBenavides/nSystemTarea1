@@ -89,16 +89,37 @@ int ofrecer(Subasta s, double precio){
 		nPrintf("\t... esperando ...\n");
 		O=s->o[0];
 		nWaitCondition(O->c);//(1)
+		nPrintf("\tOferente despierto: ");
+		if (s->o[0]->e == dentro && s->ready){
+			nPrintf("DENTRO\n");
+			nExit(s->m);
+			return TRUE;
+		} else {
+			nPrintf("AFUERA\n");
+			nExit(s->m);
+			return FALSE;
+		}
 	} 
 	else if (s->count < s->n){//primeros n oferentes
 		nPrintf("\t+ Ingresa nueva oferta: %lf",precio);
 		s->o[s->count]->e = dentro;
 		s->o[s->count]->p = precio;
 		O=s->o[s->count];
+		int index=s->count;
 		s->count++;
 		menorPostor(s);
 		nPrintf("\t... esperando ...\n");
-		nWaitCondition(O->c);//(1)
+		nWaitCondition(s->o[index]->c);//(1)
+		nPrintf("\tOferente despierto: ");
+		if (s->o[index]->e == dentro && s->ready){
+			nPrintf("DENTRO\n");
+			nExit(s->m);
+			return TRUE;
+		} else {
+			nPrintf("AFUERA\n");
+			nExit(s->m);
+			return FALSE;
+		}
 	} else {
 		nPrintf("\t+Ingresa nueva oferta: %lf \n",precio);
 		nPrintf("\t\tComparando %lf con la nueva oferta %lf \n",s->min,precio);
@@ -122,21 +143,22 @@ int ofrecer(Subasta s, double precio){
 			s->o[s->minIndex]->e=dentro;
 			s->o[s->minIndex]->p=precio;
 			int index=s->minIndex;
+			O=s->o[s->minIndex];
 			s->min=precio;
 			menorPostor(s);
 			nPrintf("\t... esperando ...\n");
 			nWaitCondition(s->o[index]->c);
+			nPrintf("\tOferente despierto: ");
+			if (s->o[index]->e == dentro && s->ready){
+				nPrintf("DENTRO\n");
+				nExit(s->m);
+				return TRUE;
+			} else {
+				nPrintf("AFUERA\n");
+				nExit(s->m);
+				return FALSE;
+			}	
 		}
-	}
-	nPrintf("\tOferente despierto: ");
-	if (O->e == dentro && s->ready){
-		nPrintf("DENTRO\n");
-		nExit(s->m);
-		return TRUE;
-	} else {
-		nPrintf("AFUERA\n");
-		nExit(s->m);
-		return FALSE;
 	}	
 }
 
