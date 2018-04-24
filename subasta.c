@@ -127,7 +127,6 @@ int ofrecer(Subasta s, double precio){
 		return TRUE;
 	} else {
 		nPrintf("AFUERA\n");
-		nFree(O);
 		return FALSE;
 	}	
 }
@@ -135,7 +134,7 @@ int ofrecer(Subasta s, double precio){
 double adjudicar(Subasta s, int *punidades){
 	nPrintf("\tAdjudicar!\n");
 	nEnter(s->m);
-	double resto=s->n - s->count;
+	int resto=s->n - s->count;
 	nPrintf("\t\tQuedaron %lf unidades libres\n",resto);
 	punidades=resto;
 	double suma=0;
