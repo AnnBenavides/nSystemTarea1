@@ -63,11 +63,11 @@ Oferente initOferta(Subasta s, double precio){
 
 Subasta nuevaSubasta(int unidades){
 	nPrintf("\tCreando nueva subasta con %d elementos",unidades);
-	Subasta s = nMalloc(sizeof(*s));
+	Subasta s = (Subasta)nMalloc(sizeof(*s));
 	s->m = nMakeMonitor();
 	s->n = unidades;
 	s->count = 0;
-	s->o = nMalloc(unidades*sizeof(Oferente));//probar sin *
+	s->o = (Oferente*)nMalloc(unidades*sizeof(Oferente));//probar sin *
 	s->minIndex = 0;
 	nPrintf("... subasta abierta!\n");
 	return s;
