@@ -87,6 +87,7 @@ int test2(int print_msg) {
     nSleep(1000);
   if (nWaitTask(maria))
     nFatalError("nMain", "maria debio perder con 3\n");
+  nPrintf("**Bleh");
   nTask sonia= nEmitTask(oferente, s, print_msg, "sonia", 6);
   if (print_msg>=0)
     nSleep(1000);
