@@ -76,25 +76,29 @@ Subasta nuevaSubasta(int unidades){
 
 int ofrecer(Subasta s, double precio){
 	// oferta (precio) de comprar un elemento de la subasta
-	Oferente O = initOferta(s,precio);
+	Oferente O;// = initOferta(s,precio);
 	// esperando hasta que:
 	// 1. la subasta se cierre (se llame a adjudicar) retornando TRUE
 	// 2. los otros oferentes tienen mejores ofertas, retorna FALSE
 	nEnter(s->m);
 	if (s->count==0){ //primer oferente
 		nPrintf("\t+ Ingresa primera oferta: %lf",precio);
-		O->e=dentro;
-		s->o[s->count]=O;
-		s->min=precio;
+		s->o[0]->e = dentro;
+		s->o[0]->p = precio;
+		s->o[0]->c = nMakeCondition(s->m);
+		s->min = precio;
 		s->count++;
 		nPrintf("... esperando ...\n");
+		O=s->o[0];
 		nWaitCondition(O->c);//(1)
 		nExit(s->m);
 	} 
 	else if (s->count < s->n){//primeros n oferentes
 		nPrintf("\t+ Ingresa nueva oferta: %lf",precio);
-		O->e=dentro;
-		s->o[s->count]=O;
+		s->o[s->count]->e = dentro;
+		s->o[s->count]->p = precio;
+		s->o[s->count]->c = nMakeCondition(s->m);
+		O=s->o[s->count];
 		s->count++;
 		menorPostor(s);
 		nPrintf("... esperando ...\n");
@@ -113,8 +117,14 @@ int ofrecer(Subasta s, double precio){
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
 		else{
 			nPrintf("\t\tCambiar oferentes en la subasta: ");
-			O->e=dentro;
-			swap(s,O);
+			//TODO swap
+			s->o[s->minIndex]->e=afuera;
+			nSignalCondition(s->o[s->minIndex]->c);
+			nPrintf("\t\t Hechar al menor postor de la subasta\n");
+			//poner los datos del nuevo oferente
+			s->o[s->minIndex]->e=dentro;
+			s->o[s->minIndex]->p=precio;
+			s->min=precio;
 			nPrintf("... esperando ...\n");
 			nWaitCondition(O->c);
 			nExit(s->m);
