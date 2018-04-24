@@ -76,7 +76,7 @@ Subasta nuevaSubasta(int unidades){
 
 int ofrecer(Subasta s, double precio){
 	// oferta (precio) de comprar un elemento de la subasta
-	Oferente O = initOferta(s,precio);;
+	Oferente O = initOferta(s,precio);
 	// esperando hasta que:
 	// 1. la subasta se cierre (se llame a adjudicar) retornando TRUE
 	// 2. los otros oferentes tienen mejores ofertas, retorna FALSE
@@ -108,7 +108,6 @@ int ofrecer(Subasta s, double precio){
 		if (precio <= s->min){
 			nPrintf("\t\tOferta rechazada\n");
 			nExit(s->m);
-			nFree(O);
 			return FALSE;
 		}
 		// si tiene una apuesta mayor expulsa al menor oferente y entra el (1)
