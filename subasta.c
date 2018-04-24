@@ -84,9 +84,13 @@ int ofrecer(Subasta s, double precio){
 	if (s->count==0){ //primer oferente
 		nPrintf("\t+ Ingresa primera oferta: %lf",precio);
 		s->o[0]->e = dentro;
+		nPrintf("\t 1..");
 		s->o[0]->p = precio;
+		nPrintf("\t 2..");
 		s->o[0]->c = nMakeCondition(s->m);
+		nPrintf("\t 3..");
 		s->min = precio;
+		nPrintf("\t min..");
 		s->count++;
 		nPrintf("... esperando ...\n");
 		O=s->o[0];
