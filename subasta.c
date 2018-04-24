@@ -95,11 +95,10 @@ int ofrecer(Subasta s, double precio){
 		s->o[s->count]->e = dentro;
 		s->o[s->count]->p = precio;
 		O=s->o[s->count];
-		int index=s->count;
 		s->count++;
 		menorPostor(s);
 		nPrintf("\t... esperando ...\n");
-		nWaitCondition(0->c);//(1)
+		nWaitCondition(O->c);//(1)
 	} else {
 		nPrintf("\t+Ingresa nueva oferta: %lf \n",precio);
 		nPrintf("\t\tComparando %lf con la nueva oferta %lf \n",s->min,precio);
