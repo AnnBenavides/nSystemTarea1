@@ -86,7 +86,7 @@ int ofrecer(Subasta s, double precio){
 		s->min = precio;
 		nPrintf("\t min..\n");
 		s->count++;
-		nPrintf("... esperando ...\n");
+		nPrintf("\t... esperando ...\n");
 		O=s->o[0];
 		nWaitCondition(O->c);//(1)
 	} 
@@ -97,7 +97,7 @@ int ofrecer(Subasta s, double precio){
 		O=s->o[s->count];
 		s->count++;
 		menorPostor(s);
-		nPrintf("... esperando ...\n");
+		nPrintf("\t... esperando ...\n");
 		nWaitCondition(O->c);//(1)
 	} else {
 		nPrintf("\t+Ingresa nueva oferta: %lf \n",precio);
@@ -119,10 +119,11 @@ int ofrecer(Subasta s, double precio){
 			//poner los datos del nuevo oferente
 			s->o[s->minIndex]->e=dentro;
 			s->o[s->minIndex]->p=precio;
+			O=s->o[s->minIndex];
 			s->min=precio;
 			menorPostor(s);
-			nPrintf("... esperando ...\n");
-			nWaitCondition(s->o[s->minIndex]->c);
+			nPrintf("\t... esperando ...\n");
+			nWaitCondition(O->c);
 		}
 	}
 	nPrintf("\tOferente despierto: ");
