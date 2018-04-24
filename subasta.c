@@ -135,7 +135,7 @@ int ofrecer(Subasta s, double precio){
 		return TRUE;
 	} else {
 		nPrintf("AFUERA\n");
-		//nExit(s->m);
+		nExit(s->m);
 		return FALSE;
 	}	
 }
